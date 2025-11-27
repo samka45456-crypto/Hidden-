@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protected Content</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+            background-color: #f4f4f4;
+            user-select: none; /* Command: Prevents text highlighting */
+        }
+        #secret-container {
+            font-weight: bold;
+            color: #333;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px dashed red;
+            display: none; /* Command: Hidden by default until JS runs */
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <h1>Secured Page</h1>
+    <p>The content below is protected and hidden from source view.</p>
+
+    <div id="secret-container"></div>
+
+<script>
+    // --- 1. ENCRYPTED CONTENT (Hex Encoded String) ---
+    // Command: Stores the secret message ("This text is hidden inside the worker!") 
+    // as Hex codes to prevent reading in view-source.
+    var _0x4e2a = [
+        "\\x54\\x68\\x69\\x73\\x20\\x74\\x65\\x78\\x74\\x20\\x69\\x73\\x20", 
+        "\\x68\\x69\\x64\\x64\\x65\\x6e\\x20\\x69\\x6e\\x73\\x69\\x64\\x65\\x20",
+        "\\x74\\x68\\x65\\x20\\x77\\x6f\\x72\\x6b\\x65\\x72\\x21",
+        "<br><br>",
+        "\\x59\\x6f\\x75\\x20\\x63\\x61\\x6e\\x6e\\x6f\\x74\\x20\\x73\\x65\\x65\\x20\\x69\\x74\\x20\\x69\\x6e\\x20\\x76\\x69\\x65\\x77\\x2d\\x73\\x6f\\x75\\x72\\x63\\x65\\x2e"
+    ];
+
+    // --- 2. DECODER & INJECTOR ---
+    // Command: Executes when the entire page loads.
+    window.onload = function() {
+        // Command: Decodes the Hex string
+        var content = "";
+        for (var i = 0; i < _0x4e2a.length; i++) {
+            content += _0x4e2a[i];
+        }
+
+        // Command: Injects the decoded text into the empty container
+        var container = document.getElementById("secret-container");
+        container.innerHTML = content;
+        container.style.display = "block"; // Command: Makes the container visible
+        
+        // Command: Starts the Dev Tools trap
+        detectDevTools();
+    };
+
+    // --- 3. INPUT BLOCKING COMMANDS ---
+    // Command: Disables the standard right-click context menu
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    
+    // Command: Disables keyboard shortcuts for developer tools
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123) return false; // F12
+        if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) return false; // Ctrl+Shift+I/J
+        if (e.ctrlKey && e.keyCode == 85) return false; // Ctrl+U (View Source)
+    }
+
+    // --- 4. DEBUGGER TRAP COMMAND ---
+    // Command: Creates a loop that constantly pauses execution if the console is open.
+    function detectDevTools() {
+        setInterval(function() {
+            // This is the core 'debugger' command wrapped to make detection harder
+            (function() {}.constructor("debugger")());
+        }, 500);
+    }
+</script>
+
+</body>
+</html>
